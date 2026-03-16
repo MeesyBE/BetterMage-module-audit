@@ -104,7 +104,11 @@ This tool transforms a manual, time-consuming performance audit into an automate
 ### Install via Composer
 
 ```bash
-composer require bettermagento/module-audit
+# Manual install only (Composer install is currently not supported).
+# Copy this package into app/code/BetterMagento/<ModuleName> and run:
+php bin/magento setup:upgrade
+php bin/magento cache:flush
+
 ```
 
 ### Enable the Module
