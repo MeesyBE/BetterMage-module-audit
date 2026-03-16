@@ -1,0 +1,113 @@
+<?php
+/**
+ * @var \BetterMagento\ModuleAudit\Block\Adminhtml\Dashboard $block
+ */
+$report = $block->getReport();
+$stats = $report->getStatistics();
+$modules = $report->getModules();
+$score = $report->getScore();
+$grade = $report->getGrade();
+$gradeColor = $block->getGradeColor($grade);
+?>
+<div class="bm-audit-dashboard">
+    <style>
+        .bm-audit-dashboard { font-family: 'Open Sans', sans-serif; }
+        .bm-audit-summary { display: flex; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
+        .bm-audit-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 24px; flex: 1; min-width: 200px; }
+        .bm-audit-card h3 { margin: 0 0 8px; font-size: 14px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+        .bm-audit-card .value { font-size: 36px; font-weight: 700; }
+        .bm-audit-grade { display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 50%; color: #fff; font-size: 28px; font-weight: 800; }
+        .bm-audit-actions { margin-bottom: 24px; display: flex; gap: 8px; }
+        .bm-audit-actions a { padding: 8px 16px; border-radius: 4px; text-decoration: none; font-size: 13px; }
+        .bm-audit-actions .btn-primary { background: #1979c3; color: #fff; }
+        .bm-audit-actions .btn-secondary { background: #f0f0f0; color: #333; border: 1px solid #ccc; }
+        .bm-audit-table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; }
+        .bm-audit-table th { background: #f5f5f5; padding: 12px 16px; text-align: left; font-size: 12px; text-transform: uppercase; color: #666; border-bottom: 2px solid #e0e0e0; }
+        .bm-audit-table td { padding: 10px 16px; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
+        .bm-audit-table tr:hover td { background: #f9f9f9; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .badge-yes { background: #dcfce7; color: #166534; }
+        .badge-no { background: #f3f4f6; color: #9ca3af; }
+        .score-bar { display: inline-block; height: 6px; border-radius: 3px; }
+    </style>
+
+    <div class="bm-audit-summary">
+        <div class="bm-audit-card">
+            <h3><?= $block->escapeHtml(__('Overall Score')) ?></h3>
+            <div style="display:flex;align-items:center;gap:16px;">
+                <span class="bm-audit-grade" style="background:<?= $block->escapeHtmlAttr($gradeColor) ?>">
+                    <?= $block->escapeHtml($grade) ?>
+                </span>
+                <span class="value"><?= (int)$score ?><span style="font-size:18px;color:#999">/100</span></span>
+            </div>
+        </div>
+        <div class="bm-audit-card">
+            <h3><?= $block->escapeHtml(__('Total Modules')) ?></h3>
+            <div class="value"><?= (int)($stats['total_modules'] ?? 0) ?></div>
+        </div>
+        <div class="bm-audit-card">
+            <h3><?= $block->escapeHtml(__('With Observers')) ?></h3>
+            <div class="value"><?= (int)($stats['modules_with_observers'] ?? 0) ?></div>
+        </div>
+        <div class="bm-audit-card">
+            <h3><?= $block->escapeHtml(__('With Plugins')) ?></h3>
+            <div class="value"><?= (int)($stats['modules_with_plugins'] ?? 0) ?></div>
+        </div>
+        <div class="bm-audit-card">
+            <h3><?= $block->escapeHtml(__('With Routes')) ?></h3>
+            <div class="value"><?= (int)($stats['modules_with_routes'] ?? 0) ?></div>
+        </div>
+    </div>
+
+    <div class="bm-audit-actions">
+        <a href="<?= $block->escapeUrl($block->getExportUrl('json')) ?>" class="btn-primary">
+            <?= $block->escapeHtml(__('Export JSON')) ?>
+        </a>
+        <a href="<?= $block->escapeUrl($block->getExportUrl('html')) ?>" class="btn-secondary">
+            <?= $block->escapeHtml(__('Export HTML Report')) ?>
+        </a>
+    </div>
+
+    <h2 style="margin:0 0 16px;font-size:18px;"><?= $block->escapeHtml(__('Module Inventory')) ?></h2>
+    <table class="bm-audit-table">
+        <thead>
+            <tr>
+                <th><?= $block->escapeHtml(__('Module')) ?></th>
+                <th><?= $block->escapeHtml(__('Version')) ?></th>
+                <th><?= $block->escapeHtml(__('Score')) ?></th>
+                <th><?= $block->escapeHtml(__('Routes')) ?></th>
+                <th><?= $block->escapeHtml(__('Observers')) ?></th>
+                <th><?= $block->escapeHtml(__('Plugins')) ?></th>
+                <th><?= $block->escapeHtml(__('Cron')) ?></th>
+                <th><?= $block->escapeHtml(__('DB')) ?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($modules as $module): ?>
+                <?php
+                    $mScore = $module->getScore();
+                    $barColor = $mScore >= 70 ? '#22c55e' : ($mScore >= 40 ? '#eab308' : '#ef4444');
+                ?>
+                <tr>
+                    <td><strong><?= $block->escapeHtml($module->getName()) ?></strong></td>
+                    <td><?= $block->escapeHtml($module->getVersion() ?: '-') ?></td>
+                    <td>
+                        <span style="display:flex;align-items:center;gap:8px;">
+                            <span class="score-bar" style="width:<?= (int)$mScore ?>px;background:<?= $block->escapeHtmlAttr($barColor) ?>"></span>
+                            <?= (int)$mScore ?>
+                        </span>
+                    </td>
+                    <td><span class="badge <?= $module->hasRoutes() ? 'badge-yes' : 'badge-no' ?>"><?= $module->hasRoutes() ? 'Yes' : 'No' ?></span></td>
+                    <td><span class="badge <?= $module->hasObservers() ? 'badge-yes' : 'badge-no' ?>"><?= $module->hasObservers() ? 'Yes' : 'No' ?></span></td>
+                    <td><span class="badge <?= $module->hasPlugins() ? 'badge-yes' : 'badge-no' ?>"><?= $module->hasPlugins() ? 'Yes' : 'No' ?></span></td>
+                    <td><span class="badge <?= $module->hasCron() ? 'badge-yes' : 'badge-no' ?>"><?= $module->hasCron() ? 'Yes' : 'No' ?></span></td>
+                    <td><span class="badge <?= $module->hasDatabase() ? 'badge-yes' : 'badge-no' ?>"><?= $module->hasDatabase() ? 'Yes' : 'No' ?></span></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+
+    <p style="margin-top:16px;color:#999;font-size:12px;">
+        <?= $block->escapeHtml(__('Last scan: %1', $report->getExecutedAt())) ?>
+    </p>
+</div>

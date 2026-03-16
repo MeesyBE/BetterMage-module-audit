@@ -1,0 +1,30 @@
+{
+    "name": "bettermagento/module-audit",
+    "description": "BM Module Audit — CLI scanner for unused modules, observers, plugins with performance impact scoring",
+    "type": "magento2-module",
+    "version": "0.2.0",
+    "keywords": ["magento2", "bettermagento", "audit", "performance", "cli", "modules"],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.2",
+        "magento/framework": ">=107.0.0",
+        "bettermagento/module-core": "^0.1",
+        "symfony/console": "^6.0",
+        "twig/twig": "^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0",
+        "phpstan/phpstan": "^1.10"
+    },
+    "autoload": {
+        "files": ["registration.php"],
+        "psr-4": {
+            "BetterMagento\\ModuleAudit\\": ""
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BetterMagento\\ModuleAudit\\Test\\": "Test"
+        }
+    }
+}

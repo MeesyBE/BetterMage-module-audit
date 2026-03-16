@@ -1,0 +1,9 @@
+parameters:
+    level: 8
+    paths:
+        - Api
+        - Model
+        - Console
+    excludePaths:
+        - Test
+    checkMissingIterableValueType: false

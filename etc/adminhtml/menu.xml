@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="BetterMagento_ModuleAudit::audit"
+             title="Module Audit"
+             module="BetterMagento_ModuleAudit"
+             parent="BetterMagento_Core::bettermagento"
+             action="bm_audit/dashboard/index"
+             resource="BetterMagento_ModuleAudit::audit_view"
+             sortOrder="20"/>
+    </menu>
+</config>

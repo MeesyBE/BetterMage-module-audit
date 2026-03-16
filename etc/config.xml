@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <bm_module_audit>
+            <general>
+                <enabled>1</enabled>
+            </general>
+            <scoring>
+                <observer_weight>30</observer_weight>
+                <plugin_weight>40</plugin_weight>
+                <dependency_weight>30</dependency_weight>
+                <fail_threshold>40</fail_threshold>
+                <warning_threshold>70</warning_threshold>
+            </scoring>
+            <export>
+                <default_format>cli</default_format>
+                <output_directory>var/bm-audit</output_directory>
+            </export>
+        </bm_module_audit>
+    </default>
+</config>

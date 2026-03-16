@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <!-- Audit Core Services -->
+    <type name="BetterMagento\ModuleAudit\Model\Audit\ModuleScanner">
+        <arguments>
+            <argument name="moduleList" xsi:type="object">Magento\Framework\Module\ModuleListInterface</argument>
+            <argument name="fileDriver" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+
+    <type name="BetterMagento\ModuleAudit\Model\Audit\ObserverAnalyzer">
+        <arguments>
+            <argument name="eventConfig" xsi:type="object">Magento\Framework\Event\ConfigInterface\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="BetterMagento\ModuleAudit\Model\Audit\PluginAnalyzer">
+        <arguments>
+            <argument name="interceptionConfig" xsi:type="object">Magento\Framework\Interception\ConfigInterface\Proxy</argument>
+            <argument name="moduleDirReader" xsi:type="object">Magento\Framework\Module\Dir\Reader</argument>
+            <argument name="fileDriver" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+
+    <type name="BetterMagento\ModuleAudit\Model\Audit\RouteAnalyzer">
+        <arguments>
+            <argument name="moduleList" xsi:type="object">Magento\Framework\Module\ModuleListInterface</argument>
+            <argument name="moduleDirReader" xsi:type="object">Magento\Framework\Module\Dir\Reader</argument>
+            <argument name="fileDriver" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+
+    <type name="BetterMagento\ModuleAudit\Model\Audit\ConfigUsageChecker">
+        <arguments>
+            <argument name="moduleList" xsi:type="object">Magento\Framework\Module\ModuleListInterface</argument>
+            <argument name="moduleDirReader" xsi:type="object">Magento\Framework\Module\Dir\Reader</argument>
+            <argument name="fileDriver" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+            <argument name="scopeConfig" xsi:type="object">Magento\Framework\App\Config\ScopeConfigInterface</argument>
+        </arguments>
+    </type>
+
+    <type name="BetterMagento\ModuleAudit\Model\Audit\Runner">
+        <arguments>
+            <argument name="moduleScanner" xsi:type="object">BetterMagento\ModuleAudit\Model\Audit\ModuleScanner</argument>
+            <argument name="observerAnalyzer" xsi:type="object">BetterMagento\ModuleAudit\Model\Audit\ObserverAnalyzer</argument>
+            <argument name="pluginAnalyzer" xsi:type="object">BetterMagento\ModuleAudit\Model\Audit\PluginAnalyzer</argument>
+            <argument name="scoreCalculator" xsi:type="object">BetterMagento\ModuleAudit\Model\Audit\ScoreCalculator</argument>
+        </arguments>
+    </type>
+
+    <!-- API Implementation Binding -->
+    <preference for="BetterMagento\ModuleAudit\Api\AuditRunnerInterface"
+                type="BetterMagento\ModuleAudit\Model\Audit\Runner"/>
+
+    <preference for="BetterMagento\ModuleAudit\Api\Export\ExporterInterface"
+                type="BetterMagento\ModuleAudit\Model\Export\CliExporter"/>
+
+    <!-- Console Commands -->
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="bm_audit_run" xsi:type="object">BetterMagento\ModuleAudit\Console\Command\RunAuditCommand</item>
+                <item name="bm_audit_modules" xsi:type="object">BetterMagento\ModuleAudit\Console\Command\ShowModulesCommand</item>
+                <item name="bm_audit_observers" xsi:type="object">BetterMagento\ModuleAudit\Console\Command\ShowObserversCommand</item>
+                <item name="bm_audit_plugins" xsi:type="object">BetterMagento\ModuleAudit\Console\Command\ShowPluginsCommand</item>
+                <item name="bm_audit_routes" xsi:type="object">BetterMagento\ModuleAudit\Console\Command\ShowRoutesCommand</item>
+                <item name="bm_audit_config" xsi:type="object">BetterMagento\ModuleAudit\Console\Command\CheckConfigCommand</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="BetterMagento\ModuleAudit\Console\Command\RunAuditCommand">
+        <arguments>
+            <argument name="auditRunner" xsi:type="object">BetterMagento\ModuleAudit\Api\AuditRunnerInterface</argument>
+            <argument name="jsonExporter" xsi:type="object">BetterMagento\ModuleAudit\Model\Export\JsonExporter</argument>
+            <argument name="htmlExporter" xsi:type="object">BetterMagento\ModuleAudit\Model\Export\HtmlExporter</argument>
+            <argument name="cliExporter" xsi:type="object">BetterMagento\ModuleAudit\Model\Export\CliExporter</argument>
+            <argument name="fileDriver" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+
+    <type name="BetterMagento\ModuleAudit\Console\Command\ShowModulesCommand">
+        <arguments>
+            <argument name="auditRunner" xsi:type="object">BetterMagento\ModuleAudit\Api\AuditRunnerInterface</argument>
+        </arguments>
+    </type>
+
+    <type name="BetterMagento\ModuleAudit\Console\Command\ShowObserversCommand">
+        <arguments>
+            <argument name="auditRunner" xsi:type="object">BetterMagento\ModuleAudit\Api\AuditRunnerInterface</argument>
+        </arguments>
+    </type>
+
+    <type name="BetterMagento\ModuleAudit\Console\Command\ShowPluginsCommand">
+        <arguments>
+            <argument name="auditRunner" xsi:type="object">BetterMagento\ModuleAudit\Api\AuditRunnerInterface</argument>
+        </arguments>
+    </type>
+
+    <!-- Admin Dashboard Controllers -->
+    <type name="BetterMagento\ModuleAudit\Controller\Adminhtml\Dashboard\Export">
+        <arguments>
+            <argument name="auditRunner" xsi:type="object">BetterMagento\ModuleAudit\Api\AuditRunnerInterface</argument>
+            <argument name="jsonExporter" xsi:type="object">BetterMagento\ModuleAudit\Model\Export\JsonExporter</argument>
+            <argument name="htmlExporter" xsi:type="object">BetterMagento\ModuleAudit\Model\Export\HtmlExporter</argument>
+            <argument name="cliExporter" xsi:type="object">BetterMagento\ModuleAudit\Model\Export\CliExporter</argument>
+        </arguments>
+    </type>
+
+</config>

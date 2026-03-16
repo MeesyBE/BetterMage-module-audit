@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="bm_module_audit"
+                 translate="label"
+                 type="text"
+                 sortOrder="300"
+                 showInDefault="1"
+                 showInWebsite="0"
+                 showInStore="0">
+            <class>separator-top</class>
+            <label>Module Audit</label>
+            <tab>bettermagento</tab>
+            <resource>BetterMagento_ModuleAudit::config</resource>
+
+            <group id="general"
+                   translate="label"
+                   type="text"
+                   sortOrder="10"
+                   showInDefault="1"
+                   showInWebsite="0"
+                   showInStore="0">
+                <label>General Settings</label>
+
+                <field id="enabled"
+                       translate="label comment"
+                       type="select"
+                       sortOrder="10"
+                       showInDefault="1"
+                       showInWebsite="0"
+                       showInStore="0">
+                    <label>Enable Module Audit</label>
+                    <comment>Master switch for audit functionality.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+
+            <group id="scoring"
+                   translate="label"
+                   type="text"
+                   sortOrder="20"
+                   showInDefault="1"
+                   showInWebsite="0"
+                   showInStore="0">
+                <label>Scoring Configuration</label>
+
+                <field id="observer_weight"
+                       translate="label comment"
+                       type="text"
+                       sortOrder="10"
+                       showInDefault="1"
+                       showInWebsite="0"
+                       showInStore="0">
+                    <label>Observer Score Weight (%)</label>
+                    <comment>Weight of observer analysis in overall score. Default: 30</comment>
+                    <validate>validate-number validate-digits-range digits-range-1-100</validate>
+                </field>
+
+                <field id="plugin_weight"
+                       translate="label comment"
+                       type="text"
+                       sortOrder="20"
+                       showInDefault="1"
+                       showInWebsite="0"
+                       showInStore="0">
+                    <label>Plugin Score Weight (%)</label>
+                    <comment>Weight of plugin analysis in overall score. Default: 40</comment>
+                    <validate>validate-number validate-digits-range digits-range-1-100</validate>
+                </field>
+
+                <field id="dependency_weight"
+                       translate="label comment"
+                       type="text"
+                       sortOrder="30"
+                       showInDefault="1"
+                       showInWebsite="0"
+                       showInStore="0">
+                    <label>Dependency Score Weight (%)</label>
+                    <comment>Weight of dependency analysis in overall score. Default: 30</comment>
+                    <validate>validate-number validate-digits-range digits-range-1-100</validate>
+                </field>
+
+                <field id="fail_threshold"
+                       translate="label comment"
+                       type="text"
+                       sortOrder="40"
+                       showInDefault="1"
+                       showInWebsite="0"
+                       showInStore="0">
+                    <label>Fail Threshold Score</label>
+                    <comment>Modules scoring below this are marked as failed (grade D-F). Default: 40</comment>
+                    <validate>validate-number validate-digits-range digits-range-1-100</validate>
+                </field>
+
+                <field id="warning_threshold"
+                       translate="label comment"
+                       type="text"
+                       sortOrder="50"
+                       showInDefault="1"
+                       showInWebsite="0"
+                       showInStore="0">
+                    <label>Warning Threshold Score</label>
+                    <comment>Modules scoring below this are marked as warning (grade C). Default: 70</comment>
+                    <validate>validate-number validate-digits-range digits-range-1-100</validate>
+                </field>
+            </group>
+
+            <group id="export"
+                   translate="label"
+                   type="text"
+                   sortOrder="30"
+                   showInDefault="1"
+                   showInWebsite="0"
+                   showInStore="0">
+                <label>Export Settings</label>
+
+                <field id="default_format"
+                       translate="label comment"
+                       type="select"
+                       sortOrder="10"
+                       showInDefault="1"
+                       showInWebsite="0"
+                       showInStore="0">
+                    <label>Default Export Format</label>
+                    <comment>Default output format for audit reports.</comment>
+                    <source_model>BetterMagento\ModuleAudit\Model\Config\Source\ExportFormat</source_model>
+                </field>
+
+                <field id="output_directory"
+                       translate="label comment"
+                       type="text"
+                       sortOrder="20"
+                       showInDefault="1"
+                       showInWebsite="0"
+                       showInStore="0">
+                    <label>Output Directory</label>
+                    <comment>Directory for exported reports (relative to Magento root). Default: var/bm-audit</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
