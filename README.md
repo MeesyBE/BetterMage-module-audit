@@ -4,7 +4,10 @@
 
 [![PHP Version](https://img.shields.io/badge/php-8.2%2B-blue)](https://php.net)
 [![Magento Version](https://img.shields.io/badge/magento-2.4.7%2B-orange)](https://magento.com)
-[![License](https://img.shields.io/badge/license-Proprietary-red)]()
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Magevanta Suite](https://img.shields.io/badge/Magevanta-Premium%20Extensions-f97316)](https://magevanta.com/extensions)
+
+> 🔍 **Free tool.** Run a full audit on your Magento store in ~5 minutes. Then fix the bottlenecks with the [Magevanta Extension Suite](https://magevanta.com/extensions).
 
 ---
 
