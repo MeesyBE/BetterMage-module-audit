@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Integration test PHPUnit configuration (standalone).
+
+    Runs Test/Integration against the standalone class-map: verifies module
+    wiring contracts (module.xml, registration, Api/Model/Console autoload,
+    data-contract implementation) that can be checked without a live Magento
+    app boot.
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+         bootstrap="Test/bootstrap.php"
+         cacheDirectory=".phpunit.integration.cache"
+         colors="true"
+         failOnWarning="true">
+
+    <testsuites>
+        <testsuite name="Integration">
+            <directory>Test/Integration</directory>
+        </testsuite>
+    </testsuites>
+
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <ini name="display_errors" value="1"/>
+    </php>
+
+</phpunit>

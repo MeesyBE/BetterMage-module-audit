@@ -6,4 +6,10 @@ parameters:
         - Console
     excludePaths:
         - Test
-    checkMissingIterableValueType: false
+        - Controller
+        - Block
+        - vendor
+
+includes:
+    - vendor/bitexpert/phpstan-magento/extension.neon
+    - phpstan-baseline.neon

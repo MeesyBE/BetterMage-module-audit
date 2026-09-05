@@ -32,10 +32,6 @@ class ShowObserversCommand extends AbstractBmCommand
 
         $this->setName((string) self::$defaultName);
 
-        parent::configure();
-
-        $this->setName((string) self::$defaultName);
-
         $this->addOption('sort', 's', InputOption::VALUE_OPTIONAL, 'Sort by: event, module, score, class', 'score')
             ->addOption('high-frequency', null, InputOption::VALUE_NONE, 'Show only high-frequency observers')
             ->addOption('invalid', null, InputOption::VALUE_NONE, 'Show only invalid/broken observers')

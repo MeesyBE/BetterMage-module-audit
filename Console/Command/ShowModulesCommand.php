@@ -32,10 +32,6 @@ class ShowModulesCommand extends AbstractBmCommand
 
         $this->setName((string) self::$defaultName);
 
-        parent::configure();
-
-        $this->setName((string) self::$defaultName);
-
         $this->addOption('sort', 's', InputOption::VALUE_OPTIONAL, 'Sort by: name, score, observers, plugins', 'score')
             ->addOption('filter', null, InputOption::VALUE_OPTIONAL, 'Filter modules by name pattern')
             ->addOption('min-score', null, InputOption::VALUE_OPTIONAL, 'Show only modules with score >= value', '0')

@@ -31,10 +31,6 @@ class ShowRoutesCommand extends AbstractBmCommand
 
         $this->setName((string) self::$defaultName);
 
-        parent::configure();
-
-        $this->setName((string) self::$defaultName);
-
         $this->addOption('scope', 's', InputOption::VALUE_OPTIONAL, 'Filter by scope: frontend, adminhtml')
             ->addOption('module', 'm', InputOption::VALUE_OPTIONAL, 'Filter by module name')
             ->addOption('duplicates', null, InputOption::VALUE_NONE, 'Show only duplicate frontNames')

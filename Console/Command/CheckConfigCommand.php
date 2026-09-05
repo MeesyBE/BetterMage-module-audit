@@ -31,10 +31,6 @@ class CheckConfigCommand extends AbstractBmCommand
 
         $this->setName((string) self::$defaultName);
 
-        parent::configure();
-
-        $this->setName((string) self::$defaultName);
-
         $this->addOption('module', 'm', InputOption::VALUE_OPTIONAL, 'Filter by module name')
             ->addOption('unused-only', null, InputOption::VALUE_NONE, 'Show only modules with unused config')
             ->addOption('format', 'f', InputOption::VALUE_OPTIONAL, 'Output format: table, json', 'table');
