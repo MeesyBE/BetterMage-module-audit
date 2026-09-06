@@ -107,7 +107,7 @@ class ShowRoutesCommand extends AbstractBmCommand
                 $table->addRow([
                     $route['module'],
                     $route['scope'],
-                    $route['id'],
+                    $route['id'] ?? '',
                     $route['front_name'],
                     $hasControllers,
                 ]);

@@ -8,6 +8,8 @@ use BetterMagento\ModuleAudit\Api\AuditRunnerInterface;
 use BetterMagento\ModuleAudit\Api\Data\AuditReportInterface;
 use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
+use Magento\Directory\Helper\Data as DirectoryHelper;
+use Magento\Framework\Json\Helper\Data as JsonHelper;
 
 class Dashboard extends Template
 {
@@ -19,8 +21,10 @@ class Dashboard extends Template
         Context $context,
         private readonly AuditRunnerInterface $auditRunner,
         array $data = [],
+        ?JsonHelper $jsonHelper = null,
+        ?DirectoryHelper $directoryHelper = null,
     ) {
-        parent::__construct($context, $data);
+        parent::__construct($context, $data, null, null, $jsonHelper, $directoryHelper);
     }
 
     public function getReport(): AuditReportInterface

@@ -8,6 +8,8 @@ use BetterMagento\ModuleAudit\Api\AuditRunnerInterface;
 use BetterMagento\ModuleAudit\Api\Data\AuditReportInterface;
 use BetterMagento\ModuleAudit\Block\Adminhtml\Dashboard;
 use Magento\Backend\Block\Template\Context;
+use Magento\Directory\Helper\Data as DirectoryHelper;
+use Magento\Framework\Json\Helper\Data as JsonHelper;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -23,8 +25,16 @@ class DashboardTest extends TestCase
     {
         $this->auditRunner = $this->createMock(AuditRunnerInterface::class);
         $context = $this->createMock(Context::class);
+        $jsonHelper = $this->createMock(JsonHelper::class);
+        $directoryHelper = $this->createMock(DirectoryHelper::class);
 
-        $this->block = new Dashboard($context, $this->auditRunner);
+        $this->block = new Dashboard(
+            $context,
+            $this->auditRunner,
+            [],
+            $jsonHelper,
+            $directoryHelper,
+        );
     }
 
     public function testGetReportExecutesAudit(): void

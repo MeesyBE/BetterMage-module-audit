@@ -9,7 +9,7 @@ use Magento\Framework\Data\OptionSourceInterface;
 class ExportFormat implements OptionSourceInterface
 {
     /**
-     * @return list<array{value: string, label: string}>
+     * @return list<array{value: string, label: Magento\Framework\Phrase}>
      */
     public function toOptionArray(): array
     {
