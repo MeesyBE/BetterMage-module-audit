@@ -19,9 +19,6 @@ use Magento\Framework\Filesystem\Driver\File;
  */
 class RouteAnalyzer
 {
-    /** @var array<string, array<string, mixed>> */
-    private array $cachedRoutes = [];
-
     public function __construct(
         private readonly ModuleListInterface $moduleList,
         private readonly ModuleDirReader $moduleDirReader,
@@ -105,7 +102,8 @@ class RouteAnalyzer
             return [];
         }
 
-        foreach ($xml->xpath('//route') as $routeNode) {
+        $routeNodes = $xml->xpath('//route') ?: [];
+        foreach ($routeNodes as $routeNode) {
             $routeId = (string) ($routeNode['id'] ?? '');
             $frontName = (string) ($routeNode['frontName'] ?? '');
 

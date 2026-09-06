@@ -103,7 +103,7 @@ class ShowRoutesCommand extends AbstractBmCommand
             $table->setHeaders(['Module', 'Scope', 'Route ID', 'Front Name', 'Controllers']);
 
             foreach ($routes as $route) {
-                $hasControllers = $route['has_controllers'] ? '<fg=green>✓</>' : '<fg=red>✗ Missing</>';
+                $hasControllers = ($route['has_controllers'] ?? false) ? '<fg=green>✓</>' : '<fg=red>✗ Missing</>';
                 $table->addRow([
                     $route['module'],
                     $route['scope'],

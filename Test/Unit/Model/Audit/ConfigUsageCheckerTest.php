@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace BetterMagento\ModuleAudit\Test\Unit\Model\Audit;
 
 use BetterMagento\ModuleAudit\Model\Audit\ConfigUsageChecker;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Filesystem\Driver\File;
-use Magento\Framework\Module\Dir\Reader as ModuleDirReader;
 use Magento\Framework\Module\ModuleListInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -19,22 +17,16 @@ class ConfigUsageCheckerTest extends TestCase
 {
     private ConfigUsageChecker $checker;
     private ModuleListInterface|MockObject $moduleList;
-    private ModuleDirReader|MockObject $moduleDirReader;
     private File|MockObject $fileDriver;
-    private ScopeConfigInterface|MockObject $scopeConfig;
 
     protected function setUp(): void
     {
         $this->moduleList = $this->createMock(ModuleListInterface::class);
-        $this->moduleDirReader = $this->createMock(ModuleDirReader::class);
         $this->fileDriver = $this->createMock(File::class);
-        $this->scopeConfig = $this->createMock(ScopeConfigInterface::class);
 
         $this->checker = new ConfigUsageChecker(
             $this->moduleList,
-            $this->moduleDirReader,
-            $this->fileDriver,
-            $this->scopeConfig
+            $this->fileDriver
         );
     }
 

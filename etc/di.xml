@@ -18,8 +18,7 @@
 
     <type name="BetterMagento\ModuleAudit\Model\Audit\PluginAnalyzer">
         <arguments>
-            <argument name="interceptionConfig" xsi:type="object">Magento\Framework\Interception\ConfigInterface\Proxy</argument>
-            <argument name="moduleDirReader" xsi:type="object">Magento\Framework\Module\Dir\Reader</argument>
+            <argument name="moduleList" xsi:type="object">Magento\Framework\Module\ModuleListInterface</argument>
             <argument name="fileDriver" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
         </arguments>
     </type>
@@ -35,9 +34,7 @@
     <type name="BetterMagento\ModuleAudit\Model\Audit\ConfigUsageChecker">
         <arguments>
             <argument name="moduleList" xsi:type="object">Magento\Framework\Module\ModuleListInterface</argument>
-            <argument name="moduleDirReader" xsi:type="object">Magento\Framework\Module\Dir\Reader</argument>
             <argument name="fileDriver" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
-            <argument name="scopeConfig" xsi:type="object">Magento\Framework\App\Config\ScopeConfigInterface</argument>
         </arguments>
     </type>
 

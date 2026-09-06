@@ -6,8 +6,7 @@ namespace BetterMagento\ModuleAudit\Model\Audit;
 
 use BetterMagento\ModuleAudit\Api\Data\PluginDataInterface;
 use BetterMagento\ModuleAudit\Model\Data\PluginData;
-use Magento\Framework\Interception\ConfigInterface as InterceptionConfig;
-use Magento\Framework\Module\Dir\Reader as ModuleDirReader;
+use Magento\Framework\Module\ModuleListInterface;
 use Magento\Framework\Filesystem\Driver\File as FileDriver;
 
 /**
@@ -43,8 +42,7 @@ class PluginAnalyzer
     private const DI_SCOPES = ['global', 'frontend', 'adminhtml'];
 
     public function __construct(
-        private readonly InterceptionConfig $interceptionConfig,
-        private readonly ModuleDirReader $moduleDirReader,
+        private readonly ModuleListInterface $moduleList,
         private readonly FileDriver $fileDriver,
     ) {
     }
@@ -86,13 +84,17 @@ class PluginAnalyzer
     private function collectPluginDefinitions(): array
     {
         $pluginDefinitions = [];
-        $moduleDirs = $this->moduleDirReader->getModuleConfigDir();
 
-        foreach ($moduleDirs as $moduleName => $configDir) {
+        foreach ($this->moduleList->getAll() as $moduleName => $moduleData) {
+            $modulePath = $moduleData['path'] ?? '';
+            if (!$modulePath) {
+                continue;
+            }
+
             foreach (self::DI_SCOPES as $scope) {
                 $diPath = $scope === 'global'
-                    ? $configDir . '/di.xml'
-                    : $configDir . '/' . $scope . '/di.xml';
+                    ? $modulePath . '/etc/di.xml'
+                    : $modulePath . '/etc/' . $scope . '/di.xml';
 
                 if (!$this->fileDriver->isExists($diPath)) {
                     continue;
@@ -246,9 +248,6 @@ class PluginAnalyzer
         }
 
         $methods = get_class_methods($pluginClass);
-        if (!is_array($methods)) {
-            return '';
-        }
 
         foreach ($methods as $method) {
             foreach (['around', 'before', 'after'] as $prefix) {
@@ -319,24 +318,22 @@ class PluginAnalyzer
         }
         
         $methods = get_class_methods($pluginClass);
+
+        foreach ($methods as $method) {
+            if (str_starts_with($method, 'around')) {
+                return 'around';
+            }
+        }
         
-        if (is_array($methods)) {
-            foreach ($methods as $method) {
-                if (str_starts_with($method, 'around')) {
-                    return 'around';
-                }
+        foreach ($methods as $method) {
+            if (str_starts_with($method, 'before')) {
+                return 'before';
             }
-            
-            foreach ($methods as $method) {
-                if (str_starts_with($method, 'before')) {
-                    return 'before';
-                }
-            }
-            
-            foreach ($methods as $method) {
-                if (str_starts_with($method, 'after')) {
-                    return 'after';
-                }
+        }
+        
+        foreach ($methods as $method) {
+            if (str_starts_with($method, 'after')) {
+                return 'after';
             }
         }
         
@@ -395,26 +392,5 @@ class PluginAnalyzer
         }
         
         return min($score, 10);
-    }
-
-    /**
-     * Calculate chain depth for a specific intercepted method.
-     *
-     * @param array<int, PluginDataInterface> $plugins
-     */
-    private function calculateChainDepth(string $interceptedClass, string $method, array $plugins): int
-    {
-        $depth = 0;
-        
-        foreach ($plugins as $plugin) {
-            if ($plugin->getInterceptedClass() === $interceptedClass 
-                && $plugin->getInterceptedMethod() === $method
-                && !$plugin->isDisabled()
-            ) {
-                $depth++;
-            }
-        }
-        
-        return $depth;
     }
 }
