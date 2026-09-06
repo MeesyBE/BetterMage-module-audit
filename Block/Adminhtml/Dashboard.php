@@ -24,7 +24,7 @@ class Dashboard extends Template
         ?JsonHelper $jsonHelper = null,
         ?DirectoryHelper $directoryHelper = null,
     ) {
-        parent::__construct($context, $data, null, null, $jsonHelper, $directoryHelper);
+        parent::__construct($context, $data, $jsonHelper, $directoryHelper);
     }
 
     public function getReport(): AuditReportInterface
