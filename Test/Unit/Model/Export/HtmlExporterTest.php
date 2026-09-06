@@ -72,9 +72,7 @@ class HtmlExporterTest extends TestCase
 
     public function testExportContainsScore(): void
     {
-        $report = $this->createMockReport();
-        $report->method('getScore')->willReturn(87);
-        $report->method('getGrade')->willReturn('B');
+        $report = $this->createMockReport(87, 'B');
         
         $html = $this->exporter->export($report);
         
@@ -84,8 +82,7 @@ class HtmlExporterTest extends TestCase
 
     public function testExportContainsStatistics(): void
     {
-        $report = $this->createMockReport();
-        $report->method('getStatistics')->willReturn([
+        $report = $this->createMockReport(85, 'B', [], [], [], [
             'total_modules' => 150,
             'total_observers' => 200,
             'total_plugins' => 100,
@@ -130,8 +127,7 @@ class HtmlExporterTest extends TestCase
         $module->method('hasCron')->willReturn(false);
         $module->method('getRecommendation')->willReturn('Module OK');
         
-        $report = $this->createMockReport();
-        $report->method('getModules')->willReturn([$module]);
+        $report = $this->createMockReport(85, 'B', [$module]);
         
         $html = $this->exporter->export($report);
         
@@ -149,8 +145,7 @@ class HtmlExporterTest extends TestCase
         $observer->method('isHighFrequency')->willReturn(false);
         $observer->method('isValid')->willReturn(true);
         
-        $report = $this->createMockReport();
-        $report->method('getObservers')->willReturn([$observer]);
+        $report = $this->createMockReport(85, 'B', [], [$observer]);
         
         $html = $this->exporter->export($report);
         
@@ -168,8 +163,7 @@ class HtmlExporterTest extends TestCase
         $plugin->method('getChainDepth')->willReturn(2);
         $plugin->method('getScore')->willReturn(5);
         
-        $report = $this->createMockReport();
-        $report->method('getPlugins')->willReturn([$plugin]);
+        $report = $this->createMockReport(85, 'B', [], [], [$plugin]);
         
         $html = $this->exporter->export($report);
         
@@ -186,8 +180,7 @@ class HtmlExporterTest extends TestCase
         $observer->method('isHighFrequency')->willReturn(true);
         $observer->method('getScore')->willReturn(8);
         
-        $report = $this->createMockReport();
-        $report->method('getObservers')->willReturn([$observer]);
+        $report = $this->createMockReport(85, 'B', [], [$observer]);
         
         $html = $this->exporter->export($report);
         
@@ -227,14 +220,21 @@ class HtmlExporterTest extends TestCase
 
     /**
      * Create mock audit report.
+     *
+     * @param array<int, ModuleDataInterface> $modules
+     * @param array<int, ObserverDataInterface> $observers
+     * @param array<int, PluginDataInterface> $plugins
+     * @param array<string, int> $stats
      */
-    private function createMockReport(): AuditReportInterface
-    {
-        $report = $this->createMock(AuditReportInterface::class);
-        $report->method('getExecutedAt')->willReturn('2026-02-28T10:00:00+00:00');
-        $report->method('getScore')->willReturn(85);
-        $report->method('getGrade')->willReturn('B');
-        $report->method('getStatistics')->willReturn([
+    private function createMockReport(
+        int $score = 85,
+        string $grade = 'B',
+        array $modules = [],
+        array $observers = [],
+        array $plugins = [],
+        array $stats = []
+    ): AuditReportInterface {
+        $defaultStats = [
             'total_modules' => 0,
             'enabled_modules' => 0,
             'modules_with_routes' => 0,
@@ -247,10 +247,17 @@ class HtmlExporterTest extends TestCase
             'total_plugins' => 0,
             'around_plugins' => 0,
             'deep_chains' => 0,
-        ]);
-        $report->method('getModules')->willReturn([]);
-        $report->method('getObservers')->willReturn([]);
-        $report->method('getPlugins')->willReturn([]);
+        ];
+        $stats = array_merge($defaultStats, $stats);
+
+        $report = $this->createMock(AuditReportInterface::class);
+        $report->method('getExecutedAt')->willReturn('2026-02-28T10:00:00+00:00');
+        $report->method('getScore')->willReturn($score);
+        $report->method('getGrade')->willReturn($grade);
+        $report->method('getStatistics')->willReturn($stats);
+        $report->method('getModules')->willReturn($modules);
+        $report->method('getObservers')->willReturn($observers);
+        $report->method('getPlugins')->willReturn($plugins);
         
         return $report;
     }
