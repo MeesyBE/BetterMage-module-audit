@@ -149,14 +149,16 @@ class RouteAnalyzer
         }
 
         try {
-            $files = $this->fileDriver->readDirectory($controllerDir);
+            // Magento's readDirectory() may return array|false; normalise to array
+            // so iterating (or recursing) never hits a null/false foreach.
+            $files = $this->fileDriver->readDirectory($controllerDir) ?: [];
             foreach ($files as $file) {
                 if (str_ends_with($file, '.php')) {
                     return true;
                 }
                 // Check subdirectories
                 if ($this->fileDriver->isDirectory($file)) {
-                    $subFiles = $this->fileDriver->readDirectory($file);
+                    $subFiles = $this->fileDriver->readDirectory($file) ?: [];
                     foreach ($subFiles as $subFile) {
                         if (str_ends_with($subFile, '.php')) {
                             return true;

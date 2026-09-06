@@ -22,7 +22,7 @@ jobs:
       - name: Composer install
         run: composer install --prefer-dist --no-interaction --no-progress
       - name: Run PHPUnit (unit only)
-        run: ./vendor/bin/phpunit --testdox --display-warnings --display-deprecations --display-notices --display-phpunit-deprecations
+        run: ./vendor/bin/phpunit --testdox
 
   php83-unit:
     name: PHPUnit (PHP 8.3)
@@ -40,7 +40,7 @@ jobs:
       - name: Composer install
         run: composer install --prefer-dist --no-interaction --no-progress
       - name: Run PHPUnit (unit only)
-        run: ./vendor/bin/phpunit --testdox --display-warnings --display-deprecations --display-notices --display-phpunit-deprecations
+        run: ./vendor/bin/phpunit --testdox
 
   phpstan:
     name: PHPStan level 8
