@@ -97,7 +97,13 @@ class RouteAnalyzer
 
         try {
             $content = $this->fileDriver->fileGetContents($filePath);
-            $xml = new \SimpleXMLElement($content);
+            $useInternalErrors = libxml_use_internal_errors(true);
+            try {
+                $xml = new \SimpleXMLElement($content);
+            } finally {
+                libxml_clear_errors();
+                libxml_use_internal_errors($useInternalErrors);
+            }
         } catch (\Exception) {
             return [];
         }

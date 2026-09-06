@@ -161,7 +161,7 @@ class HtmlExporterEdgeCaseTest extends TestCase
             'invalid_observers' => 0,
             'total_plugins' => 0,
             'around_plugins' => 0,
-            'deep_chain_plugins' => 0,
+            'deep_chains' => 0,
         ];
     }
 }
