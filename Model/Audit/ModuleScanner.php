@@ -12,8 +12,6 @@ use UnexpectedValueException;
 
 /**
  * Scans all Magento modules and detects their features (routes, observers, plugins, cron, config, etc.).
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class ModuleScanner
 {
@@ -137,10 +135,6 @@ class ModuleScanner
      */
     private function fileExists(string $filePath): bool
     {
-        try {
-            return $this->fileDriver->isExists($filePath);
-        } catch (UnexpectedValueException) {
-            return false;
-        }
+        return $this->fileDriver->isExists($filePath);
     }
 }

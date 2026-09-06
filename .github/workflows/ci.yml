@@ -1,0 +1,78 @@
+name: CI — BetterMagento Module Audit
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+jobs:
+  php82-unit:
+    name: PHPUnit (PHP 8.2)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:v2
+          coverage: xdebug
+      - name: Adobe repo auth
+        run: composer config --global http-basic.repo.magento.com ${{ secrets.MAGENTO_PUBLIC_KEY }} ${{ secrets.MAGENTO_PRIVATE_KEY }}
+      - name: Composer install
+        run: composer install --prefer-dist --no-interaction --no-progress
+      - name: Run PHPUnit (unit only)
+        run: ./vendor/bin/phpunit --testdox
+
+  php83-unit:
+    name: PHPUnit (PHP 8.3)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: xdebug
+      - name: Adobe repo auth
+        run: composer config --global http-basic.repo.magento.com ${{ secrets.MAGENTO_PUBLIC_KEY }} ${{ secrets.MAGENTO_PRIVATE_KEY }}
+      - name: Composer install
+        run: composer install --prefer-dist --no-interaction --no-progress
+      - name: Run PHPUnit (unit only)
+        run: ./vendor/bin/phpunit --testdox
+
+  phpstan:
+    name: PHPStan level 8
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:v2
+      - name: Adobe repo auth
+        run: composer config --global http-basic.repo.magento.com ${{ secrets.MAGENTO_PUBLIC_KEY }} ${{ secrets.MAGENTO_PRIVATE_KEY }}
+      - name: Composer install
+        run: composer install --prefer-dist --no-interaction --no-progress
+      - name: Run PHPStan
+        run: ./vendor/bin/phpstan analyse --no-progress
+
+  integration:
+    name: Integration (standalone)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:v2
+      - name: Adobe repo auth
+        run: composer config --global http-basic.repo.magento.com ${{ secrets.MAGENTO_PUBLIC_KEY }} ${{ secrets.MAGENTO_PRIVATE_KEY }}
+      - name: Composer install
+        run: composer install --prefer-dist --no-interaction --no-progress
+      - name: Run integration tests
+        run: ./vendor/bin/phpunit -c phpunit.integration.xml.dist --testdox
+

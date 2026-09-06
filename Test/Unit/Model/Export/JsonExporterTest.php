@@ -63,9 +63,7 @@ class JsonExporterTest extends TestCase
 
     public function testExportContainsSummary(): void
     {
-        $report = $this->createMockReport();
-        $report->method('getScore')->willReturn(87);
-        $report->method('getGrade')->willReturn('B');
+        $report = $this->createMockReport(87, 'B');
         
         $json = $this->exporter->export($report);
         $data = json_decode($json, true);
@@ -77,8 +75,7 @@ class JsonExporterTest extends TestCase
 
     public function testExportContainsStatistics(): void
     {
-        $report = $this->createMockReport();
-        $report->method('getStatistics')->willReturn([
+        $report = $this->createMockReport(85, 'B', [], [], [], [
             'total_modules' => 150,
             'total_observers' => 200,
         ]);
@@ -108,8 +105,7 @@ class JsonExporterTest extends TestCase
         $module->method('getDependents')->willReturn([]);
         $module->method('getRecommendation')->willReturn('Module OK');
         
-        $report = $this->createMockReport();
-        $report->method('getModules')->willReturn([$module]);
+        $report = $this->createMockReport(85, 'B', [$module]);
         
         $json = $this->exporter->export($report);
         $data = json_decode($json, true);
@@ -134,8 +130,7 @@ class JsonExporterTest extends TestCase
         $observer->method('getScope')->willReturn('global');
         $observer->method('isAsync')->willReturn(false);
         
-        $report = $this->createMockReport();
-        $report->method('getObservers')->willReturn([$observer]);
+        $report = $this->createMockReport(85, 'B', [], [$observer]);
         
         $json = $this->exporter->export($report);
         $data = json_decode($json, true);
@@ -160,8 +155,7 @@ class JsonExporterTest extends TestCase
         $plugin->method('getScore')->willReturn(5);
         $plugin->method('likelyHasBusinessLogic')->willReturn(true);
         
-        $report = $this->createMockReport();
-        $report->method('getPlugins')->willReturn([$plugin]);
+        $report = $this->createMockReport(85, 'B', [], [], [$plugin]);
         
         $json = $this->exporter->export($report);
         $data = json_decode($json, true);
@@ -181,8 +175,7 @@ class JsonExporterTest extends TestCase
         $observer->method('isHighFrequency')->willReturn(true);
         $observer->method('getScore')->willReturn(8);
         
-        $report = $this->createMockReport();
-        $report->method('getObservers')->willReturn([$observer]);
+        $report = $this->createMockReport(85, 'B', [], [$observer]);
         
         $json = $this->exporter->export($report);
         $data = json_decode($json, true);
@@ -206,16 +199,30 @@ class JsonExporterTest extends TestCase
     /**
      * Create mock audit report.
      */
-    private function createMockReport(): AuditReportInterface
-    {
+    /**
+     * Create mock audit report.
+     *
+     * @param array<int, ModuleDataInterface> $modules
+     * @param array<int, ObserverDataInterface> $observers
+     * @param array<int, PluginDataInterface> $plugins
+     * @param array<string, int> $stats
+     */
+    private function createMockReport(
+        int $score = 85,
+        string $grade = 'B',
+        array $modules = [],
+        array $observers = [],
+        array $plugins = [],
+        array $stats = []
+    ): AuditReportInterface {
         $report = $this->createMock(AuditReportInterface::class);
         $report->method('getExecutedAt')->willReturn('2026-02-28T10:00:00+00:00');
-        $report->method('getScore')->willReturn(85);
-        $report->method('getGrade')->willReturn('B');
-        $report->method('getStatistics')->willReturn([]);
-        $report->method('getModules')->willReturn([]);
-        $report->method('getObservers')->willReturn([]);
-        $report->method('getPlugins')->willReturn([]);
+        $report->method('getScore')->willReturn($score);
+        $report->method('getGrade')->willReturn($grade);
+        $report->method('getStatistics')->willReturn($stats);
+        $report->method('getModules')->willReturn($modules);
+        $report->method('getObservers')->willReturn($observers);
+        $report->method('getPlugins')->willReturn($plugins);
         
         return $report;
     }

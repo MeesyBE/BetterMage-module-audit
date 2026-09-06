@@ -1,0 +1,7 @@
+vendor/
+composer.lock
+.phpunit.cache/
+.phpunit.integration.cache/
+phpstan-baseline.neon.bak
+.DS_Store
+coverage.xml

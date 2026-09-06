@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace BetterMagento\ModuleAudit\Model\Audit;
 
 use Magento\Framework\Module\ModuleListInterface;
-use Magento\Framework\Module\Dir\Reader as ModuleDirReader;
 use Magento\Framework\Filesystem\Driver\File;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 
 /**
  * Detects unused module configuration entries.
@@ -22,9 +20,7 @@ class ConfigUsageChecker
 {
     public function __construct(
         private readonly ModuleListInterface $moduleList,
-        private readonly ModuleDirReader $moduleDirReader,
         private readonly File $fileDriver,
-        private readonly ScopeConfigInterface $scopeConfig,
     ) {
     }
 
@@ -133,24 +129,33 @@ class ConfigUsageChecker
 
         try {
             $content = $this->fileDriver->fileGetContents($filePath);
-            $xml = new \SimpleXMLElement($content);
+            $useInternalErrors = libxml_use_internal_errors(true);
+            try {
+                $xml = new \SimpleXMLElement($content);
+            } finally {
+                libxml_clear_errors();
+                libxml_use_internal_errors($useInternalErrors);
+            }
         } catch (\Exception) {
             return [];
         }
 
-        foreach ($xml->xpath('//section') as $section) {
+        $sections = $xml->xpath('//section') ?: [];
+        foreach ($sections as $section) {
             $sectionId = (string) ($section['id'] ?? '');
             if (!$sectionId) {
                 continue;
             }
 
-            foreach ($section->xpath('.//group') as $group) {
+            $groups = $section->xpath('.//group') ?: [];
+            foreach ($groups as $group) {
                 $groupId = (string) ($group['id'] ?? '');
                 if (!$groupId) {
                     continue;
                 }
 
-                foreach ($group->xpath('.//field') as $field) {
+                $fields = $group->xpath('.//field') ?: [];
+                foreach ($fields as $field) {
                     $fieldId = (string) ($field['id'] ?? '');
                     if ($fieldId) {
                         $paths[] = $sectionId . '/' . $groupId . '/' . $fieldId;
@@ -173,7 +178,13 @@ class ConfigUsageChecker
 
         try {
             $content = $this->fileDriver->fileGetContents($filePath);
-            $xml = new \SimpleXMLElement($content);
+            $useInternalErrors = libxml_use_internal_errors(true);
+            try {
+                $xml = new \SimpleXMLElement($content);
+            } finally {
+                libxml_clear_errors();
+                libxml_use_internal_errors($useInternalErrors);
+            }
         } catch (\Exception) {
             return [];
         }

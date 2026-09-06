@@ -18,8 +18,7 @@
 
     <type name="BetterMagento\ModuleAudit\Model\Audit\PluginAnalyzer">
         <arguments>
-            <argument name="interceptionConfig" xsi:type="object">Magento\Framework\Interception\ConfigInterface\Proxy</argument>
-            <argument name="moduleDirReader" xsi:type="object">Magento\Framework\Module\Dir\Reader</argument>
+            <argument name="moduleList" xsi:type="object">Magento\Framework\Module\ModuleListInterface</argument>
             <argument name="fileDriver" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
         </arguments>
     </type>
@@ -35,9 +34,7 @@
     <type name="BetterMagento\ModuleAudit\Model\Audit\ConfigUsageChecker">
         <arguments>
             <argument name="moduleList" xsi:type="object">Magento\Framework\Module\ModuleListInterface</argument>
-            <argument name="moduleDirReader" xsi:type="object">Magento\Framework\Module\Dir\Reader</argument>
             <argument name="fileDriver" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
-            <argument name="scopeConfig" xsi:type="object">Magento\Framework\App\Config\ScopeConfigInterface</argument>
         </arguments>
     </type>
 
@@ -76,7 +73,6 @@
             <argument name="auditRunner" xsi:type="object">BetterMagento\ModuleAudit\Api\AuditRunnerInterface</argument>
             <argument name="jsonExporter" xsi:type="object">BetterMagento\ModuleAudit\Model\Export\JsonExporter</argument>
             <argument name="htmlExporter" xsi:type="object">BetterMagento\ModuleAudit\Model\Export\HtmlExporter</argument>
-            <argument name="cliExporter" xsi:type="object">BetterMagento\ModuleAudit\Model\Export\CliExporter</argument>
             <argument name="fileDriver" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
         </arguments>
     </type>
@@ -99,13 +95,16 @@
         </arguments>
     </type>
 
-    <!-- Admin Dashboard Controllers -->
+    <!-- Admin Dashboard Controllers.
+         The Export controller injects two ExporterInterface-typed params, so the
+         global <preference for="ExporterInterface"> (CliExporter) would resolve BOTH
+         to the CLI exporter. Override per-param so JSON/HTML resolve to the real
+         implementations (and drop the orphan cliExporter arg that matches no ctor param). -->
     <type name="BetterMagento\ModuleAudit\Controller\Adminhtml\Dashboard\Export">
         <arguments>
             <argument name="auditRunner" xsi:type="object">BetterMagento\ModuleAudit\Api\AuditRunnerInterface</argument>
             <argument name="jsonExporter" xsi:type="object">BetterMagento\ModuleAudit\Model\Export\JsonExporter</argument>
             <argument name="htmlExporter" xsi:type="object">BetterMagento\ModuleAudit\Model\Export\HtmlExporter</argument>
-            <argument name="cliExporter" xsi:type="object">BetterMagento\ModuleAudit\Model\Export\CliExporter</argument>
         </arguments>
     </type>
 

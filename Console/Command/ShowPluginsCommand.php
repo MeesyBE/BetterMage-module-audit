@@ -32,10 +32,6 @@ class ShowPluginsCommand extends AbstractBmCommand
 
         $this->setName((string) self::$defaultName);
 
-        parent::configure();
-
-        $this->setName((string) self::$defaultName);
-
         $this->addOption('sort', 's', InputOption::VALUE_OPTIONAL, 'Sort by: class, module, type, chain, score', 'score')
             ->addOption('type', 't', InputOption::VALUE_OPTIONAL, 'Filter by type: before, after, around')
             ->addOption('deep-chains', null, InputOption::VALUE_NONE, 'Show only deep chains (≥4 plugins)')

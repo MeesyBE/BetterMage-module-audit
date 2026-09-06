@@ -40,7 +40,11 @@ class IndexTest extends TestCase
         $config = $this->createMock(Config::class);
         $config->method('getTitle')->willReturn($title);
 
-        $page = $this->createMock(Page::class);
+        $page = $this->getMockBuilder(Page::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getConfig'])
+            ->addMethods(['setActiveMenu'])
+            ->getMock();
         $page->expects($this->once())
             ->method('setActiveMenu')
             ->with('BetterMagento_ModuleAudit::audit')

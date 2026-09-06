@@ -143,7 +143,6 @@ class HtmlExporterEdgeCaseTest extends TestCase
         $report->method('getPlugins')->willReturn($plugins);
         $report->method('getStatistics')->willReturn($stats);
         $report->method('getExecutedAt')->willReturn('2026-02-28 12:00:00');
-        $report->method('getTopIssues')->willReturn([]);
 
         return $report;
     }
@@ -162,7 +161,7 @@ class HtmlExporterEdgeCaseTest extends TestCase
             'invalid_observers' => 0,
             'total_plugins' => 0,
             'around_plugins' => 0,
-            'deep_chain_plugins' => 0,
+            'deep_chains' => 0,
         ];
     }
 }

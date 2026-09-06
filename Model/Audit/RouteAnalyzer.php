@@ -19,9 +19,6 @@ use Magento\Framework\Filesystem\Driver\File;
  */
 class RouteAnalyzer
 {
-    /** @var array<string, array<string, mixed>> */
-    private array $cachedRoutes = [];
-
     public function __construct(
         private readonly ModuleListInterface $moduleList,
         private readonly ModuleDirReader $moduleDirReader,
@@ -100,12 +97,19 @@ class RouteAnalyzer
 
         try {
             $content = $this->fileDriver->fileGetContents($filePath);
-            $xml = new \SimpleXMLElement($content);
+            $useInternalErrors = libxml_use_internal_errors(true);
+            try {
+                $xml = new \SimpleXMLElement($content);
+            } finally {
+                libxml_clear_errors();
+                libxml_use_internal_errors($useInternalErrors);
+            }
         } catch (\Exception) {
             return [];
         }
 
-        foreach ($xml->xpath('//route') as $routeNode) {
+        $routeNodes = $xml->xpath('//route') ?: [];
+        foreach ($routeNodes as $routeNode) {
             $routeId = (string) ($routeNode['id'] ?? '');
             $frontName = (string) ($routeNode['frontName'] ?? '');
 
@@ -145,14 +149,16 @@ class RouteAnalyzer
         }
 
         try {
-            $files = $this->fileDriver->readDirectory($controllerDir);
+            // Magento's readDirectory() may return array|false; normalise to array
+            // so iterating (or recursing) never hits a null/false foreach.
+            $files = $this->fileDriver->readDirectory($controllerDir) ?: [];
             foreach ($files as $file) {
                 if (str_ends_with($file, '.php')) {
                     return true;
                 }
                 // Check subdirectories
                 if ($this->fileDriver->isDirectory($file)) {
-                    $subFiles = $this->fileDriver->readDirectory($file);
+                    $subFiles = $this->fileDriver->readDirectory($file) ?: [];
                     foreach ($subFiles as $subFile) {
                         if (str_ends_with($subFile, '.php')) {
                             return true;

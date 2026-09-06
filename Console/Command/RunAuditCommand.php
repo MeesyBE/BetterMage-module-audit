@@ -39,15 +39,6 @@ class RunAuditCommand extends AbstractBmCommand
 
         $this->setName((string) self::$defaultName);
 
-        parent::configure();
-
-        $this->setName((string) self::$defaultName);
-
-        parent::configure();
-
-        // Explicit name avoids empty-name failures in some interception/bootstrap paths.
-        $this->setName((string) self::$defaultName);
-
         $this->addOption(
             'output',
             'o',

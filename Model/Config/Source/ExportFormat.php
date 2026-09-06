@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace BetterMagento\ModuleAudit\Model\Config\Source;
 
 use Magento\Framework\Data\OptionSourceInterface;
+use Magento\Framework\Phrase;
 
 class ExportFormat implements OptionSourceInterface
 {
+    /**
+     * @return list<array{value: string, label: Phrase}>
+     */
     public function toOptionArray(): array
     {
         return [

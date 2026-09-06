@@ -76,9 +76,9 @@ class ScoreCalculator
             $module->setScoreReason(implode('; ', $reasons));
             
             // Generate recommendation
-            if ($score >= 7) {
+            if ($score >= 5) {
                 $module->setRecommendation('Consider disabling or removing this module');
-            } elseif ($score >= 4) {
+            } elseif ($score >= 3) {
                 $module->setRecommendation('Review module necessity and configuration');
             } else {
                 $module->setRecommendation('Module appears to be properly utilized');

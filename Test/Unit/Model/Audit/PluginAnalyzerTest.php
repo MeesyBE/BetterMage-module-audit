@@ -7,8 +7,7 @@ namespace BetterMagento\ModuleAudit\Test\Unit\Model\Audit;
 use BetterMagento\ModuleAudit\Api\Data\PluginDataInterface;
 use BetterMagento\ModuleAudit\Model\Audit\PluginAnalyzer;
 use Magento\Framework\Filesystem\Driver\File as FileDriver;
-use Magento\Framework\Interception\ConfigInterface as InterceptionConfig;
-use Magento\Framework\Module\Dir\Reader as ModuleDirReader;
+use Magento\Framework\Module\ModuleListInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -20,26 +19,23 @@ use PHPUnit\Framework\TestCase;
 class PluginAnalyzerTest extends TestCase
 {
     private PluginAnalyzer $analyzer;
-    private InterceptionConfig&MockObject $interceptionConfig;
-    private ModuleDirReader&MockObject $moduleDirReader;
+    private ModuleListInterface&MockObject $moduleList;
     private FileDriver&MockObject $fileDriver;
 
     protected function setUp(): void
     {
-        $this->interceptionConfig = $this->createMock(InterceptionConfig::class);
-        $this->moduleDirReader = $this->createMock(ModuleDirReader::class);
+        $this->moduleList = $this->createMock(ModuleListInterface::class);
         $this->fileDriver = $this->createMock(FileDriver::class);
 
         $this->analyzer = new PluginAnalyzer(
-            $this->interceptionConfig,
-            $this->moduleDirReader,
+            $this->moduleList,
             $this->fileDriver,
         );
     }
 
     public function testAnalyzeReturnsEmptyArrayWhenNoModules(): void
     {
-        $this->moduleDirReader->method('getModuleConfigDir')->willReturn([]);
+        $this->moduleList->method('getAll')->willReturn([]);
 
         $result = $this->analyzer->analyze();
 
@@ -57,8 +53,8 @@ class PluginAnalyzerTest extends TestCase
     </type>
 </config>
 XML;
-        $this->moduleDirReader->method('getModuleConfigDir')
-            ->willReturn(['Vendor_Module' => '/app/code/Vendor/Module/etc']);
+        $this->moduleList->method('getAll')
+            ->willReturn(['Vendor_Module' => ['path' => '/app/code/Vendor/Module']]);
 
         $this->fileDriver->method('isExists')
             ->willReturnCallback(fn(string $path) => $path === '/app/code/Vendor/Module/etc/di.xml');
@@ -86,8 +82,8 @@ XML;
     </type>
 </config>
 XML;
-        $this->moduleDirReader->method('getModuleConfigDir')
-            ->willReturn(['Vendor_Module' => '/app/code/Vendor/Module/etc']);
+        $this->moduleList->method('getAll')
+            ->willReturn(['Vendor_Module' => ['path' => '/app/code/Vendor/Module']]);
 
         $this->fileDriver->method('isExists')
             ->willReturnCallback(fn(string $path) => $path === '/app/code/Vendor/Module/etc/di.xml');
@@ -114,8 +110,8 @@ XML;
     </type>
 </config>
 XML;
-        $this->moduleDirReader->method('getModuleConfigDir')
-            ->willReturn(['Vendor_Module' => '/app/code/Vendor/Module/etc']);
+        $this->moduleList->method('getAll')
+            ->willReturn(['Vendor_Module' => ['path' => '/app/code/Vendor/Module']]);
 
         $this->fileDriver->method('isExists')
             ->willReturnCallback(fn(string $path) => $path === '/app/code/Vendor/Module/etc/di.xml');
@@ -141,8 +137,8 @@ XML;
     </type>
 </config>
 XML;
-        $this->moduleDirReader->method('getModuleConfigDir')
-            ->willReturn(['Vendor_Module' => '/app/code/Vendor/Module/etc']);
+        $this->moduleList->method('getAll')
+            ->willReturn(['Vendor_Module' => ['path' => '/app/code/Vendor/Module']]);
 
         $this->fileDriver->method('isExists')
             ->willReturnCallback(fn(string $path) => $path === '/app/code/Vendor/Module/etc/di.xml');
@@ -169,8 +165,8 @@ XML;
     </type>
 </config>
 XML;
-        $this->moduleDirReader->method('getModuleConfigDir')
-            ->willReturn(['Vendor_Module' => '/app/code/Vendor/Module/etc']);
+        $this->moduleList->method('getAll')
+            ->willReturn(['Vendor_Module' => ['path' => '/app/code/Vendor/Module']]);
 
         $this->fileDriver->method('isExists')
             ->willReturnCallback(fn(string $path) => $path === '/app/code/Vendor/Module/etc/di.xml');
@@ -189,8 +185,8 @@ XML;
 
     public function testSkipsInvalidDiXml(): void
     {
-        $this->moduleDirReader->method('getModuleConfigDir')
-            ->willReturn(['Vendor_Module' => '/app/code/Vendor/Module/etc']);
+        $this->moduleList->method('getAll')
+            ->willReturn(['Vendor_Module' => ['path' => '/app/code/Vendor/Module']]);
 
         $this->fileDriver->method('isExists')
             ->willReturnCallback(fn(string $path) => $path === '/app/code/Vendor/Module/etc/di.xml');
@@ -222,8 +218,8 @@ XML;
     </type>
 </config>
 XML;
-        $this->moduleDirReader->method('getModuleConfigDir')
-            ->willReturn(['Vendor_Module' => '/app/code/Vendor/Module/etc']);
+        $this->moduleList->method('getAll')
+            ->willReturn(['Vendor_Module' => ['path' => '/app/code/Vendor/Module']]);
 
         $this->fileDriver->method('isExists')
             ->willReturnCallback(fn(string $path) => in_array($path, [

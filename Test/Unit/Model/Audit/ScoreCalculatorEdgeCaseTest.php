@@ -168,7 +168,7 @@ class ScoreCalculatorEdgeCaseTest extends TestCase
 
         $module->expects(self::once())->method('setScore')->with(5); // 3 + 2
         $module->expects(self::once())->method('setRecommendation')
-            ->with('Review module necessity and configuration');
+            ->with('Consider disabling or removing this module');
 
         $this->calculator->calculateModuleScores([$module]);
     }
@@ -220,9 +220,9 @@ class ScoreCalculatorEdgeCaseTest extends TestCase
         $module->method('hasDatabase')->willReturn(false);
         $module->method('hasConfig')->willReturn(false);
 
-        // Score will be 5 which triggers "Review" recommendation (>= 4)
+        // Score will be 5 which triggers removal recommendation (>= 5)
         $module->expects(self::once())->method('setRecommendation')
-            ->with('Review module necessity and configuration');
+            ->with('Consider disabling or removing this module');
 
         $this->calculator->calculateModuleScores([$module]);
     }

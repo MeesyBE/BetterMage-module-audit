@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
+         bootstrap="Test/bootstrap.php"
          cacheDirectory=".phpunit.cache"
          colors="true"
          failOnWarning="true"
@@ -18,7 +18,12 @@
             <directory suffix=".php">Api</directory>
             <directory suffix=".php">Model</directory>
             <directory suffix=".php">Console</directory>
+            <directory suffix=".php">Block</directory>
         </include>
+        <exclude>
+            <directory>Test</directory>
+            <directory>vendor</directory>
+        </exclude>
         <report>
             <clover outputFile="coverage.xml"/>
             <text outputFile="php://stdout" showOnlySummary="true"/>
