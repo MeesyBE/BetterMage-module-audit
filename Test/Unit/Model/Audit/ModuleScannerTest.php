@@ -30,7 +30,7 @@ class ModuleScannerTest extends TestCase
     {
         $this->moduleList
             ->expects($this->once())
-            ->method('getNames')
+            ->method('getAll')
             ->willReturn([]);
 
         $result = $this->scanner->scan();
@@ -42,18 +42,13 @@ class ModuleScannerTest extends TestCase
     public function testScanReturnsModuleDataInterfaces(): void
     {
         $this->moduleList
-            ->expects($this->once())
-            ->method('getNames')
-            ->willReturn(['Magento_Catalog', 'Magento_Sales']);
-
-        $this->moduleList
-            ->method('getOne')
-            ->willReturnMap([
-                ['Magento_Catalog', ['name' => 'Magento_Catalog', 'setup_version' => '1.0.0']],
-                ['Magento_Sales', ['name' => 'Magento_Sales', 'setup_version' => '2.0.0']],
+            ->method('getAll')
+            ->willReturn([
+                'Magento_Catalog' => ['name' => 'Magento_Catalog', 'setup_version' => '1.0.0', 'path' => ''],
+                'Magento_Sales' => ['name' => 'Magento_Sales', 'setup_version' => '2.0.0', 'path' => ''],
             ]);
 
-        // Mock file existence checks
+        // No module path means no feature file checks
         $this->fileDriver->method('isExists')->willReturn(false);
 
         $result = $this->scanner->scan();
@@ -65,22 +60,23 @@ class ModuleScannerTest extends TestCase
     public function testScanDetectsModuleFeatures(): void
     {
         $this->moduleList
-            ->expects($this->once())
-            ->method('getNames')
-            ->willReturn(['Magento_Catalog']);
-
-        $this->moduleList
-            ->method('getOne')
-            ->with('Magento_Catalog')
-            ->willReturn(['name' => 'Magento_Catalog', 'setup_version' => '1.0.0']);
+            ->method('getAll')
+            ->willReturn([
+                'Magento_Catalog' => [
+                    'name' => 'Magento_Catalog',
+                    'setup_version' => '1.0.0',
+                    'path' => '/app/code/Magento/Catalog',
+                ],
+            ]);
 
         // All feature files exist
         $this->fileDriver->method('isExists')->willReturn(true);
+        $this->fileDriver->method('fileGetContents')->willReturn('<plugin>test</plugin>');
 
         $result = $this->scanner->scan();
 
         $this->assertCount(1, $result);
-        
+
         $module = $result[0];
         $this->assertEquals('Magento_Catalog', $module->getName());
         $this->assertTrue($module->hasRoutes());
@@ -94,23 +90,19 @@ class ModuleScannerTest extends TestCase
     public function testScanHandlesMissingModuleInfo(): void
     {
         $this->moduleList
-            ->expects($this->once())
-            ->method('getNames')
-            ->willReturn(['Unknown_Module']);
-
-        $this->moduleList
-            ->method('getOne')
-            ->with('Unknown_Module')
-            ->willReturn(null);
+            ->method('getAll')
+            ->willReturn([
+                'Unknown_Module' => [],
+            ]);
 
         $this->fileDriver->method('isExists')->willReturn(false);
 
         $result = $this->scanner->scan();
 
         $this->assertCount(1, $result);
-        
+
         $module = $result[0];
         $this->assertEquals('Unknown_Module', $module->getName());
-        $this->assertEquals('Unknown', $module->getVersion());
+        $this->assertEquals('0.0.0', $module->getVersion());
     }
 }

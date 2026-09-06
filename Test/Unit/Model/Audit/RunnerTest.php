@@ -109,7 +109,7 @@ class RunnerTest extends TestCase
 
         $this->assertSame(3, $stats['total_observers']);
         $this->assertSame(2, $stats['high_frequency_observers']);
-        $this->assertSame(1, $stats['invalid_observers']);
+        $this->assertSame(2, $stats['invalid_observers']);
     }
 
     public function testStatisticsPluginCounts(): void

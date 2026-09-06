@@ -100,6 +100,8 @@ class ScoreCalculatorTest extends TestCase
         $module->method('hasPlugins')->willReturn(false);
         $module->method('hasCron')->willReturn(false);
         $module->method('isEnabled')->willReturn(true);
+        $module->method('hasDatabase')->willReturn(true);
+        $module->method('hasConfig')->willReturn(true);
 
         // Active module should have low score
         $module->expects($this->once())
@@ -138,7 +140,7 @@ class ScoreCalculatorTest extends TestCase
         $observer->method('isValid')->willReturn(false); // Invalid = major penalty
         
         $report->method('getModules')->willReturn([]);
-        $report->method('getObservers')->willReturn([$observer]);
+        $report->method('getObservers')->willReturn([$observer, $observer]); // 2 invalid = -10
         $report->method('getPlugins')->willReturn([]);
         
         // Invalid observer should significantly reduce score

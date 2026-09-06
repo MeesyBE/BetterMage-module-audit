@@ -64,7 +64,7 @@ class RouteAnalyzerTest extends TestCase
 XML;
 
         $this->fileDriver->method('isExists')->willReturnCallback(
-            fn(string $path) => str_contains($path, 'frontend/routes.xml')
+            fn(string $path) => str_contains($path, 'frontend/routes.xml') || str_ends_with($path, '/Controller')
         );
 
         $this->fileDriver->method('fileGetContents')->willReturn($routesXml);
