@@ -25,6 +25,9 @@ class DashboardTest extends TestCase
     {
         $this->auditRunner = $this->createMock(AuditRunnerInterface::class);
         $context = $this->createMock(Context::class);
+        $urlBuilder = $this->createMock(\Magento\Framework\UrlInterface::class);
+        $urlBuilder->method('getUrl')->willReturn('http://localhost/bm_audit/dashboard/export');
+        $context->method('getUrlBuilder')->willReturn($urlBuilder);
         $jsonHelper = $this->createMock(JsonHelper::class);
         $directoryHelper = $this->createMock(DirectoryHelper::class);
 
