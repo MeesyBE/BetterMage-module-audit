@@ -36,14 +36,14 @@ class ModuleLoadTest extends TestCase
     public function testModuleXmlDeclaresCorrectName(): void
     {
         $xml = $this->loadModuleXml();
-        $this->assertSame('BetterMagento_ModuleAudit', (string) $xml['name']);
-        $this->assertNotEmpty((string) $xml['setup_version']);
+        $this->assertSame('BetterMagento_ModuleAudit', (string) $xml->module['name']);
+        $this->assertNotEmpty((string) $xml->module['setup_version']);
     }
 
     public function testModuleXmlSequencesCoreModule(): void
     {
         $moduleNames = [];
-        foreach ($this->loadModuleXml()->xpath('./sequence/module') as $seqModule) {
+        foreach ($this->loadModuleXml()->xpath('./module/sequence/module') as $seqModule) {
             $moduleNames[] = (string) $seqModule['name'];
         }
 

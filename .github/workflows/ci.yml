@@ -76,27 +76,3 @@ jobs:
       - name: Run integration tests
         run: ./vendor/bin/phpunit -c phpunit.integration.xml.dist --testdox
 
-  phpstan-baseline:
-    name: Generate PHPStan baseline (TEMP)
-    runs-on: ubuntu-latest
-    # TEMP job: run once via PR to produce phpstan-baseline.neon as an artifact,
-    # then remove this job and commit the baseline. Do not run on main.
-    if: github.ref_name != 'main'
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup PHP 8.2
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          tools: composer:v2
-      - name: Adobe repo auth
-        run: composer config --global http-basic.repo.magento.com ${{ secrets.MAGENTO_PUBLIC_KEY }} ${{ secrets.MAGENTO_PRIVATE_KEY }}
-      - name: Composer install
-        run: composer install --prefer-dist --no-interaction --no-progress
-      - name: Generate baseline
-        run: ./vendor/bin/phpstan analyse --generate-baseline --no-progress
-      - name: Upload baseline artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: phpstan-baseline
-          path: phpstan-baseline.neon
